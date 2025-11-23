@@ -2,7 +2,11 @@ import { CollectionConfig } from 'payload/types';
 
 const Users: CollectionConfig = {
   slug: 'users',
-  auth: true,
+  auth: {
+    // 👇 これを追加するだけで、このCollectionでAPIキーが使えるようになります
+    useAPIKey: true, 
+  },
+  // auth: true,
   admin: {
     useAsTitle: 'email',
   },

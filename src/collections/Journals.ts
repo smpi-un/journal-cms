@@ -8,6 +8,9 @@ const Journals: CollectionConfig = {
   },
   access: {
     read: () => true,
+    update: () => true,
+    create: () => true,
+    delete: () => true,
   },
   fields: [
     {
@@ -18,7 +21,7 @@ const Journals: CollectionConfig = {
           label: 'Main',
           fields: [
             {
-              name: 'entryAt', // Python: entry_at
+              name: 'entryAt',
               type: 'date',
               required: true,
               admin: {
@@ -29,27 +32,27 @@ const Journals: CollectionConfig = {
               },
             },
             {
-              name: 'title', // Python: title
+              name: 'title',
               type: 'text',
             },
             {
-              name: 'richTextContent', // Python: rich_text_content
+              name: 'richTextContent',
               type: 'richText',
             },
             {
-              name: 'textContent', // Python: text_content
+              name: 'textContent',
               type: 'textarea',
             },
             // ▼ ここが指示通りの修正箇所
             {
-              name: 'attachments', // Python: media_attachments (指示によりリネーム)
+              name: 'attachments',
               label: 'Attachments',
               type: 'array',
               fields: [
                 {
                   name: 'file',
                   type: 'upload',
-                  relationTo: 'files', // さっき作った Files コレクションと紐付け
+                  relationTo: 'files', // Files コレクションと紐付け
                   required: true,
                 },
               ],
@@ -65,23 +68,23 @@ const Journals: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'isFavorite', // Python: is_favorite
+                  name: 'isFavorite',
                   type: 'checkbox',
                   defaultValue: false,
                 },
                 {
-                  name: 'isPinned', // Python: is_pinned
+                  name: 'isPinned',
                   type: 'checkbox',
                   defaultValue: false,
                 },
               ],
             },
             {
-              name: 'notebook', // Python: notebook
+              name: 'notebook',
               type: 'text',
             },
             {
-              name: 'tags', // Python: tags
+              name: 'tags',
               type: 'array',
               fields: [
                 {
@@ -101,17 +104,17 @@ const Journals: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'moodLabel', // Python: mood_label
+                  name: 'moodLabel',
                   type: 'text',
                 },
                 {
-                  name: 'moodScore', // Python: mood_score
+                  name: 'moodScore',
                   type: 'number',
                 },
               ],
             },
             {
-              name: 'activities', // Python: activities
+              name: 'activities',
               type: 'array',
               fields: [
                 {
@@ -127,7 +130,6 @@ const Journals: CollectionConfig = {
         {
           label: 'Environment',
           fields: [
-            // Python: location_xxx (Group化)
             {
               name: 'location',
               type: 'group',
@@ -135,8 +137,8 @@ const Journals: CollectionConfig = {
                 {
                   type: 'row',
                   fields: [
-                    { name: 'latitude', type: 'number' }, // lat
-                    { name: 'longitude', type: 'number' }, // lon
+                    { name: 'latitude', type: 'number' },
+                    { name: 'longitude', type: 'number' },
                   ],
                 },
                 { name: 'name', type: 'text' },
@@ -144,7 +146,6 @@ const Journals: CollectionConfig = {
                 { name: 'altitude', type: 'number' },
               ],
             },
-            // Python: weather_xxx (Group化)
             {
               name: 'weather',
               type: 'group',
@@ -168,17 +169,16 @@ const Journals: CollectionConfig = {
           label: 'Meta',
           fields: [
             {
-              name: 'timezone', // Python: timezone
+              name: 'timezone',
               type: 'text',
             },
             {
               type: 'row',
               fields: [
-                { name: 'deviceName', type: 'text' }, // Python: device_name
-                { name: 'stepCount', type: 'number' }, // Python: step_count
+                { name: 'deviceName', type: 'text' },
+                { name: 'stepCount', type: 'number' },
               ],
             },
-            // Python: source_xxx (Group化)
             {
               name: 'source',
               type: 'group',
@@ -191,12 +191,12 @@ const Journals: CollectionConfig = {
             },
             // DB上の作成・更新日時とは別に保持したい場合
             {
-              name: 'created_at', // Python: created_at
+              name: 'created_at',
               type: 'date',
               admin: { date: { pickerAppearance: 'dayAndTime' } },
             },
             {
-              name: 'modified_at', // Python: modified_at
+              name: 'modified_at',
               type: 'date',
               admin: { date: { pickerAppearance: 'dayAndTime' } },
             },

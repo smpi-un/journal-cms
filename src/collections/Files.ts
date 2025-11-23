@@ -1,5 +1,6 @@
 import { CollectionConfig } from 'payload/types';
 import path from 'path';
+import payload from 'payload';
 
 const Files: CollectionConfig = {
   slug: 'files',
