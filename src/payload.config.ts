@@ -16,6 +16,9 @@ export default buildConfig({
       beforeDashboard: [BeforeDashboard],
     }
   },
+  upload: {
+    defParamCharset: 'utf-8',
+  },
   collections: [
     Users,
     Posts,
