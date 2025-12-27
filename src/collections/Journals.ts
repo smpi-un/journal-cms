@@ -1,7 +1,19 @@
 import { CollectionConfig } from 'payload/types';
 
+const API_KEY='dataset-RSHSVTHM3PJS0TgBVNSpvMR4'
+const DATASET_ID='ea31a7c5-61e5-4c52-befa-6aea2d6f542e/'
+const DIFY_API_URL = `http://host.docker.internal:5001/v1/datasets/${DATASET_ID}/document/create_by_text`; 
+const DIFY_API_KEY = `Bearer ${API_KEY}`; // "Bearer " + キー
 const Journals: CollectionConfig = {
   slug: 'journals',
+  versions: {
+    maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
+    drafts: {
+      autosave: {    // 自動保存の設定（任意）
+        interval: 2000, // 2秒ごとに自動保存
+      },
+    }
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['entryAt', 'title', 'moodLabel'],
@@ -205,6 +217,60 @@ const Journals: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    afterChange: [
+      async ({ doc, operation }) => {
+        const extractText = (children: any[]): string => {
+          if (!Array.isArray(children)) return '';
+
+          return children.map((node) => {
+            // テキストノードならそのまま返す
+            if (node.text) return node.text;
+
+            // 子要素（リンクや太字など）があるなら再帰的に取得
+            if (node.children) return extractText(node.children);
+
+            return '';
+          }).join('\n'); // ブロックごとに改行を入れる
+        };
+        // 作成(create)または更新(update)の時だけ実行
+        if (operation === 'create' || operation === 'update') {
+          
+          // Difyに送るテキストを作成（タイトルと本文を結合するなど）
+
+          const content = doc.textContent ? doc.textContent : extractText(doc.richTextContent);
+          const textData = `タイトル: ${doc.title}\n\n本文:\n${content}`;
+
+          try {
+            const response = await fetch(DIFY_API_URL, {
+              method: 'POST',
+              headers: {
+                'Authorization': DIFY_API_KEY,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: doc.title, // Dify上のドキュメント名
+                text: textData,  // 実際に学習させるテキスト
+                indexing_technique: 'high_quality', // 'high_quality' or 'economy'
+                process_rule: {
+                  mode: 'automatic',
+                },
+              }),
+            });
+
+            if (!response.ok) {
+              console.error('Dify Sync Error:', await response.text());
+            } else {
+              console.log('Dify Sync Success:', doc.title);
+            }
+
+          } catch (error) {
+            console.error('Dify Connection Error:', error);
+          }
+        }
+      },
+    ],
+  },
 };
 
 export default Journals;

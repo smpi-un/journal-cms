@@ -6,6 +6,8 @@ import Files from './collections/Files';
 import Journals from './collections/Journals';
 import { payloadCloud } from '@payloadcms/plugin-cloud';
 import BeforeDashboard from './components/BeforeDashboard';
+import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
+import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3';
 
 export default buildConfig({
   admin: {
@@ -32,6 +34,29 @@ export default buildConfig({
     schemaOutputFile: path.resolve(__dirname, 'generated-schema.graphql'),
   },
   plugins: [
-    payloadCloud()
+    payloadCloud(),
+    cloudStorage({
+      collections: {
+        'files': { // Uploadsを有効にしているコレクション
+          disableLocalStorage: true,
+          adapter: s3Adapter({
+            config: {
+              endpoint: process.env.S3_ENDPOINT,
+              region: process.env.S3_REGION,
+              credentials: {
+                accessKeyId: process.env.S3_ACCESS_KEY,
+                secretAccessKey: process.env.S3_SECRET_KEY,
+              },
+              forcePathStyle: process.env.S3_FORCE_PATH_STYLE === 'true',
+            },
+            bucket: process.env.S3_BUCKET,
+          }),
+          // ブラウザ用のURLを生成する関数
+          generateFileURL: (file) => {
+            return `http://localhost:9000/${process.env.S3_BUCKET}/${file.filename}`;
+          },
+        },
+      },
+    }),
   ]
 });

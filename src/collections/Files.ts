@@ -3,6 +3,14 @@ import path from 'path';
 
 const Files: CollectionConfig = {
   slug: 'files',
+  versions: {
+    maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
+    drafts: {
+      autosave: {    // 自動保存の設定（任意）
+        interval: 2000, // 2秒ごとに自動保存
+      },
+    }
+  },
   upload: {
     staticURL: '/files',
     staticDir: path.resolve(__dirname, '../../media/files'),

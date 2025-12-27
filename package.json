@@ -18,17 +18,18 @@
     "copyfiles": "copyfiles -u 1 \"src/**/*.{html,css,scss,ttf,woff,woff2,eot,svg,jpg,png}\" dist/",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "generate:graphQLSchema": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:graphQLSchema",
-    
     "gen:types": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload generate:types",
     "fix:deps": "pnpm install"
   },
   "dependencies": {
     "@payloadcms/plugin-cloud": "^2.0.0",
+    "@payloadcms/plugin-cloud-storage": "^1.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "payload": "^1.8.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/express": "^4.17.9",

@@ -19,6 +19,9 @@ export interface User {
   id: string;
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean;
+  apiKey?: string;
+  apiKeyIndex?: string;
   email: string;
   resetPasswordToken?: string;
   resetPasswordExpiration?: string;
@@ -37,13 +40,20 @@ export interface Post {
   author?: string | User;
   updatedAt: string;
   createdAt: string;
+  _status?: 'draft' | 'published';
 }
 export interface File {
   id: string;
-  originalFilename?: string;
   alt?: string;
+  originalFilename?: string;
+  metaData?: string;
+  tags?: {
+    tag?: string;
+    id?: string;
+  }[];
   updatedAt: string;
   createdAt: string;
+  _status?: 'draft' | 'published';
   url?: string;
   filename?: string;
   mimeType?: string;
@@ -111,4 +121,5 @@ export interface Journal {
   modified_at?: string;
   updatedAt: string;
   createdAt: string;
+  _status?: 'draft' | 'published';
 }

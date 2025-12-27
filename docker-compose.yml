@@ -2,35 +2,120 @@ services:
   payload:
     image: node:18-alpine
     ports:
-      - '3001:3000'
+      - '3000:3000'
     volumes:
       - .:/home/node/app
       - node_modules:/home/node/app/node_modules
       - ./data/payload/uploads:/uploads   # ← ホストの ./data/payload-uploads に保存される
 
     working_dir: /home/node/app/
-    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
+    # command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm dev"
+    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm install && pnpm add sharp && pnpm dev"
     depends_on:
       - mongo
       # - postgres
+      - meilisearch
+      - minio
+      - minio-init
     env_file:
       - .env
     environment:
       - NPM_CONFIG_IGNORE_SCRIPTS=false
       - PAYLOAD_UPLOAD_DIR=/app/uploads
-
-
-  # Ensure your DATABASE_URI uses 'mongo' as the hostname ie. mongodb://mongo/my-db-name
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      # - DATABASE_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
+      # - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
+      - MONGODB_URI=mongodb://mongo:27017/payload-db?authSource=admin
+      - S3_ENDPOINT=http://minio:9000
+      - S3_FORCE_PATH_STYLE=true
+      # - S3_BUCKET=my-bucket
+      - S3_REGION=us-east-1
+      - S3_ACCESS_KEY=${MINIO_ROOT_USER}
+      - S3_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+    extra_hosts: # for Dify
+      - "host.docker.internal:host-gateway"
+      
   mongo:
     image: mongo:latest
     ports:
-      - '27017:27017'
+      - '27017'
     command:
       - --storageEngine=wiredTiger
+    #   - "--replSet"
+    #   - "rs0"
+    #   - "--bind_ip_all"
+    #   - "--port"
+    #   - "27017"
+    env_file:
+      - .env
     volumes:
       - data:/data/db
-    logging:
-      driver: none
+
+  # mongo-express:
+  #   image: mongo-express:latest
+  #   container_name: mongo-express
+  #   restart: always
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     # ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+  #     # ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+  #     ME_CONFIG_MONGODB_SERVER: mongo
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - mongo
+
+  # # MongoDBレプリカセット自動初期化用
+  # mongo-init-replica:
+  #   image: mongo:latest
+  #   depends_on:
+  #     - mongo
+  #   env_file:
+  #     - .env
+  #   restart: "no"
+  #   entrypoint: >
+  #     /bin/bash -c "
+  #     echo 'Waiting for Mongo to start...';
+  #     sleep 5;
+  #     # レプリカセットの初期化を実行（失敗してもエラーで止まらないように || true をつける）
+  #     mongosh --host mongo:27017 -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"mongo:27017\"}]})' || true;
+  #     echo 'Replica set initialized.';
+  #     "
+
+  redis:
+    image: redis:7-alpine
+    container_name: my_redis
+    restart: unless-stopped
+  appsmith:
+     image: index.docker.io/appsmith/appsmith-ee
+     container_name: appsmith
+     ports:
+         - "80:80"
+         - "443:443"
+     volumes:
+         - appsmith-data:/appsmith-stacks
+     restart: unless-stopped
+  # appsmith:
+  #   image: appsmith/appsmith-ce:v1.9.43
+  #   container_name: my_appsmith
+  #   restart: unless-stopped
+  #   ports:
+  #     - "8080:80"
+  #   env_file: ./.env
+  #   # URIからreplicaSetパラメータを削除3
+  #   environment:
+  #     # APPSMITH_MONGODB_URI: mongodb://mongo:27017/appsmith?authSource=admin
+  #     # APPSMITH_MONGODB_URI: mongodb://mongo:27017/appsmith?authSource=admin&replicaSet=rs0
+  #     # APPSMITH_MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/appsmith?authSource=admin
+  #     # APPSMITH_MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/appsmith?authSource=admin&replicaSet=rs0
+  #     APPSMITH_REDIS_URL: redis://redis:6379
+  #   depends_on:
+  #     - mongo
+  #     - redis
+  #   volumes:
+  #     - appsmith-data:/appsmith-stacks
+
 
   # Uncomment the following to use postgres
   # postgres:
@@ -41,7 +126,50 @@ services:
   #   ports:
   #     - "5432:5432"
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.10
+    container_name: my_meilisearch
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    env_file:
+      - .env
+    volumes:
+      - meili-data:/meili_data
+
+  # オブジェクトストレージ (画像のS3互換保存先)
+  minio:
+    image: minio/minio
+    container_name: my_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000" # APIポート
+      - "9001:9001" # 管理画面ポート
+    env_file:
+      - .env
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      - minio
+    env_file:
+      - .env
+    # MinIOの起動を待ち、バケット作成とパブリック設定を行う
+    entrypoint: >
+      /bin/sh -c "
+      until /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do echo 'Waiting for MinIO...' && sleep 1; done;
+      /usr/bin/mc mb myminio/${S3_BUCKET} || echo 'Bucket already exists';
+      /usr/bin/mc anonymous set public myminio/${S3_BUCKET};
+      exit 0;
+      "
+
 volumes:
   data:
+  appsmith-data:
   # pgdata:
   node_modules:
+  meili-data:
+  minio-data:
