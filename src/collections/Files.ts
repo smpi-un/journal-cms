@@ -12,8 +12,6 @@ const Files: CollectionConfig = {
     }
   },
   upload: {
-    staticURL: '/files',
-    staticDir: path.resolve(__dirname, '../../media/files'),
     imageSizes: [],
     mimeTypes: undefined,
     adminThumbnail: 'filename',

@@ -39,6 +39,7 @@ export default buildConfig({
       collections: {
         'files': { // Uploadsを有効にしているコレクション
           disableLocalStorage: true,
+          prefix: '', // ← add
           adapter: s3Adapter({
             config: {
               endpoint: process.env.S3_ENDPOINT,

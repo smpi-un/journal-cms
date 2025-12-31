@@ -24,8 +24,8 @@ services:
       - PAYLOAD_UPLOAD_DIR=/app/uploads
       - MEILISEARCH_HOST=http://meilisearch:7700
       # - DATABASE_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
-      # - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
-      - MONGODB_URI=mongodb://mongo:27017/payload-db?authSource=admin
+      - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
+      # - MONGODB_URI=mongodb://mongo:27017/payload-db?authSource=admin
       - S3_ENDPOINT=http://minio:9000
       - S3_FORCE_PATH_STYLE=true
       # - S3_BUCKET=my-bucket
