@@ -1,9 +1,8 @@
 import { CollectionConfig } from 'payload/types';
 
-const API_KEY='dataset-RSHSVTHM3PJS0TgBVNSpvMR4'
-const DATASET_ID='ea31a7c5-61e5-4c52-befa-6aea2d6f542e/'
-const DIFY_API_URL = `http://host.docker.internal:5001/v1/datasets/${DATASET_ID}/document/create_by_text`; 
-const DIFY_API_KEY = `Bearer ${API_KEY}`; // "Bearer " + キー
+const DIFY_API_URL = `${process.env.DIFY_API_URL}/datasets/${process.env.DIFY_DATASET_ID}/document/create_by_text`;
+const DIFY_API_KEY = `Bearer ${process.env.DIFY_API_KEY}`; // "Bearer " + キー
+
 const Journals: CollectionConfig = {
   slug: 'journals',
   versions: {
