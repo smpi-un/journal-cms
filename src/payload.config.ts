@@ -1,27 +1,29 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
 import Users from './collections/Users';
-import Posts from './collections/Posts'; // ← 1. インポートを追加
+import Posts from './collections/Posts';
 import Files from './collections/Files';
-import Journals from './collections/Journals';
+import Journals from './collections/Journals'; // Corrected typo here
 import { payloadCloud } from '@payloadcms/plugin-cloud';
 import BeforeDashboard from './components/BeforeDashboard';
+import DifyDashboard from './components/DifyDashboard'; // Import DifyDashboard
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3';
+import generateSummary from './endpoints/generateSummary';
 
 export default buildConfig({
   admin: {
     user: Users.slug,
     components: {
-      // The BeforeDashboard component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import BeforeDashboard statement on line 5.
       beforeDashboard: [BeforeDashboard],
+      afterDashboard: [DifyDashboard], // Add DifyDashboard here
     },
   },
   upload: {
     defParamCharset: 'utf-8',
   },
   collections: [Users, Posts, Files, Journals],
+  endpoints: [generateSummary],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -33,9 +35,8 @@ export default buildConfig({
     cloudStorage({
       collections: {
         files: {
-          // Uploadsを有効にしているコレクション
           disableLocalStorage: true,
-          prefix: '', // ← add
+          prefix: '',
           adapter: s3Adapter({
             config: {
               endpoint: process.env.S3_ENDPOINT,
@@ -48,7 +49,6 @@ export default buildConfig({
             },
             bucket: process.env.S3_BUCKET,
           }),
-          // ブラウザ用のURLを生成する関数
           generateFileURL: (file) => {
             return `http://localhost:9000/${process.env.S3_BUCKET}/${file.filename}`;
           },

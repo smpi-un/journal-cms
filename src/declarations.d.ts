@@ -3,6 +3,8 @@ declare namespace NodeJS {
     PAYLOAD_SECRET: string;
     MONGODB_URI: string;
     S3_BUCKET: string;
+    GEMINI_API_KEY: string;
+    GEMINI_MODEL_NAME: string;
     MINIO_ROOT_USER: string;
     MINIO_ROOT_PASSWORD: string;
     MEILI_MASTER_KEY: string;

@@ -1,4 +1,5 @@
 import { CollectionConfig } from 'payload/types';
+import AiSummaryButton from '../components/AiSummaryButton'; // Import AiSummaryButton
 
 const DIFY_API_URL = `${process.env.DIFY_API_URL}/datasets/${process.env.DIFY_DATASET_ID}/document/create_by_text`;
 const DIFY_API_KEY = `Bearer ${process.env.DIFY_API_KEY}`; // "Bearer " + キー
@@ -54,6 +55,23 @@ const Journals: CollectionConfig = {
             {
               name: 'textContent',
               type: 'textarea',
+            },
+            // ボタン専用の仮想フィールド
+            {
+              name: 'aiGenerator',
+              type: 'ui',
+              admin: {
+                components: {
+                  Field: AiSummaryButton,
+                },
+              },
+            },
+            {
+              name: 'summary',
+              type: 'textarea',
+              admin: {
+                description: 'AIが生成した要約が自動入力されます。',
+              },
             },
             // ▼ ここが指示通りの修正箇所
             {
