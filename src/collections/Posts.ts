@@ -6,10 +6,11 @@ const Posts: CollectionConfig = {
   versions: {
     maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
     drafts: {
-      autosave: {    // 自動保存の設定（任意）
+      autosave: {
+        // 自動保存の設定（任意）
         interval: 2000, // 2秒ごとに自動保存
       },
-    }
+    },
   },
   admin: {
     useAsTitle: 'title', // 管理画面の一覧で表示するフィールド
@@ -31,7 +32,7 @@ const Posts: CollectionConfig = {
       name: 'author',
       type: 'relationship', // 他のコレクションとの紐付け
       relationTo: 'users',
-    }
+    },
   ],
 };
 

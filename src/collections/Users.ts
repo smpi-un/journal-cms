@@ -4,7 +4,7 @@ const Users: CollectionConfig = {
   slug: 'users',
   auth: {
     // 👇 これを追加するだけで、このCollectionでAPIキーが使えるようになります
-    useAPIKey: true, 
+    useAPIKey: true,
   },
   // auth: true,
   admin: {

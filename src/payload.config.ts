@@ -16,17 +16,12 @@ export default buildConfig({
       // The BeforeDashboard component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import BeforeDashboard statement on line 5.
       beforeDashboard: [BeforeDashboard],
-    }
+    },
   },
   upload: {
     defParamCharset: 'utf-8',
   },
-  collections: [
-    Users,
-    Posts,
-    Files,
-    Journals,
-  ],
+  collections: [Users, Posts, Files, Journals],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -37,7 +32,8 @@ export default buildConfig({
     payloadCloud(),
     cloudStorage({
       collections: {
-        'files': { // Uploadsを有効にしているコレクション
+        files: {
+          // Uploadsを有効にしているコレクション
           disableLocalStorage: true,
           prefix: '', // ← add
           adapter: s3Adapter({
@@ -59,5 +55,5 @@ export default buildConfig({
         },
       },
     }),
-  ]
+  ],
 });

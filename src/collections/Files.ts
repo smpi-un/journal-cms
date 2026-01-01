@@ -1,15 +1,15 @@
 import { CollectionConfig, PayloadRequest } from 'payload/types';
-import path from 'path';
 
 const Files: CollectionConfig = {
   slug: 'files',
   versions: {
     maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
     drafts: {
-      autosave: {    // 自動保存の設定（任意）
+      autosave: {
+        // 自動保存の設定（任意）
         interval: 2000, // 2秒ごとに自動保存
       },
-    }
+    },
   },
   upload: {
     imageSizes: [],
@@ -24,7 +24,15 @@ const Files: CollectionConfig = {
   },
   hooks: {
     beforeChange: [
-      ({ req, data, operation }: { req: PayloadRequest & { file?: any }, data: any, operation: any }) => {
+      ({
+        req,
+        data,
+        operation,
+      }: {
+        req: PayloadRequest & { file?: any };
+        data: any;
+        operation: any;
+      }) => {
         // For 'create' operations, save the original filename.
         if (operation === 'create') {
           // req.file is reliable for admin UI uploads.

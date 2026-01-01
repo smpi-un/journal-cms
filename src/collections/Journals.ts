@@ -8,10 +8,11 @@ const Journals: CollectionConfig = {
   versions: {
     maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
     drafts: {
-      autosave: {    // 自動保存の設定（任意）
+      autosave: {
+        // 自動保存の設定（任意）
         interval: 2000, // 2秒ごとに自動保存
       },
-    }
+    },
   },
   admin: {
     useAsTitle: 'title',
@@ -222,35 +223,64 @@ const Journals: CollectionConfig = {
         const extractText = (children: any[]): string => {
           if (!Array.isArray(children)) return '';
 
-          return children.map((node) => {
-            // テキストノードならそのまま返す
-            if (node.text) return node.text;
+          return children
+            .map((node) => {
+              // テキストノードならそのまま返す
+              if (node.text) return node.text;
 
-            // 子要素（リンクや太字など）があるなら再帰的に取得
-            if (node.children) return extractText(node.children);
+              // 子要素（リンクや太字など）があるなら再帰的に取得
+              if (node.children) return extractText(node.children);
 
-            return '';
-          }).join('\n'); // ブロックごとに改行を入れる
+              return '';
+            })
+            .join('\n'); // ブロックごとに改行を入れる
         };
         // 作成(create)または更新(update)の時だけ実行
         if (operation === 'create' || operation === 'update') {
-          
-          // Difyに送るテキストを作成（タイトルと本文を結合するなど）
-
           const content = doc.textContent ? doc.textContent : extractText(doc.richTextContent);
-          const textData = `タイトル: ${doc.title}\n\n本文:\n${content}`;
+
+          // タイトルがない場合は日付をベースに生成
+          const name =
+            doc.title || `ジャーナル ${new Date(doc.entryAt).toLocaleDateString('ja-JP')}`;
+
+          // Difyに送信するための構造化されたテキストデータを生成
+          const textData = `
+# ${doc.title || '無題のジャーナル'}
+
+---
+
+## 基本情報
+
+- **記録日時**: ${new Date(doc.entryAt).toLocaleString('ja-JP')}
+- **お気に入り**: ${doc.isFavorite ? 'はい' : 'いいえ'}
+- **ピン留め**: ${doc.isPinned ? 'はい' : 'いいえ'}
+- **ノートブック**: ${doc.notebook || 'なし'}
+- **気分ラベル**: ${doc.moodLabel || 'なし'}
+
+---
+
+## タグ
+
+${doc.tags && doc.tags.length > 0 ? doc.tags.map((t) => `- ${t.tag}`).join('\n') : 'タグなし'}
+
+---
+
+## 本文
+
+${content}
+`.trim();
 
           try {
             const response = await fetch(DIFY_API_URL, {
               method: 'POST',
               headers: {
-                'Authorization': DIFY_API_KEY,
+                Authorization: DIFY_API_KEY,
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                name: doc.title, // Dify上のドキュメント名
-                text: textData,  // 実際に学習させるテキスト
-                indexing_technique: 'high_quality', // 'high_quality' or 'economy'
+                name: name, // Dify上のドキュメント名
+                text: textData, // 実際に学習させるテキスト
+                indexing_technique: 'high_quality',
                 process_rule: {
                   mode: 'automatic',
                 },
@@ -260,9 +290,8 @@ const Journals: CollectionConfig = {
             if (!response.ok) {
               console.error('Dify Sync Error:', await response.text());
             } else {
-              console.log('Dify Sync Success:', doc.title);
+              console.log('Dify Sync Success:', name);
             }
-
           } catch (error) {
             console.error('Dify Connection Error:', error);
           }
