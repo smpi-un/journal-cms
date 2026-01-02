@@ -1,4 +1,4 @@
-import { CollectionConfig, PayloadRequest } from 'payload/types';
+import { CollectionConfig } from 'payload/types';
 
 const Files: CollectionConfig = {
   slug: 'files',
@@ -13,7 +13,6 @@ const Files: CollectionConfig = {
   },
   upload: {
     imageSizes: [],
-    mimeTypes: undefined,
     adminThumbnail: 'filename',
   },
   access: {
@@ -21,32 +20,6 @@ const Files: CollectionConfig = {
     update: () => true,
     create: () => true,
     delete: () => true,
-  },
-  hooks: {
-    beforeChange: [
-      ({
-        req,
-        data,
-        operation,
-      }: {
-        req: PayloadRequest & { file?: any };
-        data: any;
-        operation: any;
-      }) => {
-        // For 'create' operations, save the original filename.
-        if (operation === 'create') {
-          // req.file is reliable for admin UI uploads.
-          if (req.file) {
-            return { ...data, originalFilename: req.file.name };
-          }
-          // Fallback for API uploads where req.file might not be present.
-          if (data.filename) {
-            return { ...data, originalFilename: data.filename };
-          }
-        }
-        return data;
-      },
-    ],
   },
   fields: [
     {
@@ -59,7 +32,6 @@ const Files: CollectionConfig = {
       type: 'text',
       label: 'Original Filename',
       admin: {
-        readOnly: true, // 管理画面では読み取り専用
         position: 'sidebar', // サイドバーに表示
       },
     },

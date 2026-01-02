@@ -56,7 +56,7 @@ const Journals: CollectionConfig = {
               name: 'textContent',
               type: 'textarea',
             },
-            // ボタン専用の仮想フィールド
+            // AI Summary Button
             {
               name: 'aiGenerator',
               type: 'ui',
@@ -66,6 +66,7 @@ const Journals: CollectionConfig = {
                 },
               },
             },
+            // AI Summary Output Field
             {
               name: 'summary',
               type: 'textarea',
@@ -73,7 +74,7 @@ const Journals: CollectionConfig = {
                 description: 'AIが生成した要約が自動入力されます。',
               },
             },
-            // ▼ ここが指示通りの修正箇所
+            // Unified Attachments Field
             {
               name: 'attachments',
               label: 'Attachments',
@@ -82,7 +83,36 @@ const Journals: CollectionConfig = {
                 {
                   name: 'file',
                   type: 'upload',
-                  relationTo: 'files', // Files コレクションと紐付け
+                  relationTo: 'files',
+                  required: true,
+                },
+                {
+                  name: 'description',
+                  type: 'text',
+                  label: 'Description / Caption',
+                },
+              ],
+            },
+            // Comments Field
+            {
+              name: 'comments',
+              label: 'Comments',
+              type: 'array',
+              fields: [
+                {
+                  name: 'commentDate',
+                  type: 'date',
+                  defaultValue: () => new Date(),
+                  admin: {
+                    date: {
+                      pickerAppearance: 'dayAndTime',
+                    },
+                  },
+                },
+                {
+                  name: 'commentBody',
+                  type: 'textarea',
+                  label: 'Comment',
                   required: true,
                 },
               ],
