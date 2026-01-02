@@ -12,7 +12,6 @@ const Files: CollectionConfig = {
     },
   },
   upload: {
-    imageSizes: [],
     adminThumbnail: 'filename',
   },
   access: {
