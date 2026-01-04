@@ -289,7 +289,8 @@ const Journals: CollectionConfig = {
 
           // タイトルがない場合は日付をベースに生成
           const name =
-            doc.title || `ジャーナル ${new Date(doc.entryAt).toLocaleDateString('ja-JP')}`;
+            // doc.title || `ジャーナル ${new Date(doc.entryAt).toLocaleDateString('ja-JP')}`;
+            doc.id;
 
           // Difyに送信するための構造化されたテキストデータを生成
           const textData = `

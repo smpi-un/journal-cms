@@ -11,6 +11,8 @@ import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3';
 import generateSummary from './endpoints/generateSummary';
 
+import Collections from './collections/Collections';
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -22,7 +24,7 @@ export default buildConfig({
   upload: {
     defParamCharset: 'utf-8',
   },
-  collections: [Users, Posts, Files, Journals],
+  collections: [Users, Posts, Files, Journals, Collections],
   endpoints: [generateSummary],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
