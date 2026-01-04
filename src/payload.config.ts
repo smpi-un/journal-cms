@@ -50,7 +50,7 @@ export default buildConfig({
             bucket: process.env.S3_BUCKET,
           }),
           generateFileURL: (file) => {
-            return `http://localhost:9000/${process.env.S3_BUCKET}/${file.filename}`;
+            return `${process.env.S3_PUBLIC_ENDPOINT}/${process.env.S3_BUCKET}/${file.filename}`;
           },
         },
       },

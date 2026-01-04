@@ -5,6 +5,7 @@ const Users: CollectionConfig = {
   auth: {
     // 👇 これを追加するだけで、このCollectionでAPIキーが使えるようになります
     useAPIKey: true,
+    tokenExpiration: 28800, // 8 hours in seconds
   },
   // auth: true,
   admin: {
