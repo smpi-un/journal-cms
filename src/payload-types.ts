@@ -12,6 +12,7 @@ export interface Config {
     posts: Post;
     files: File;
     journals: Journal;
+    groupings: Grouping;
   };
   globals: {};
 }
@@ -51,6 +52,7 @@ export interface File {
     tag?: string;
     id?: string;
   }[];
+  prefix?: string;
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
@@ -60,7 +62,6 @@ export interface File {
   filesize?: number;
   width?: number;
   height?: number;
-  sizes?: {};
 }
 export interface Journal {
   id: string;
@@ -70,8 +71,65 @@ export interface Journal {
     [k: string]: unknown;
   }[];
   textContent?: string;
+  summary?: string;
   attachments?: {
     file: string | File;
+    description?: string;
+    id?: string;
+  }[];
+  webResources?: (
+    | {
+        url: string;
+        title?: string;
+        description?: string;
+        imageUrl?: string;
+        siteName?: string;
+        crawledAt?: string;
+        id?: string;
+        blockName?: string;
+        blockType: 'general';
+      }
+    | {
+        url: string;
+        title?: string;
+        description?: string;
+        imageUrl?: string;
+        siteName?: string;
+        videoId?: string;
+        channelTitle?: string;
+        duration?: string;
+        viewCount?: number;
+        image?: string | File;
+        crawledAt?: string;
+        id?: string;
+        blockName?: string;
+        blockType: 'youtube';
+      }
+    | {
+        url: string;
+        title?: string;
+        description?: string;
+        imageUrl?: string;
+        siteName?: string;
+        placeId?: string;
+        formattedAddress?: string;
+        /**
+         * @minItems 2
+         * @maxItems 2
+         */
+        location?: [number, number];
+        rating?: number;
+        userRatingsTotal?: number;
+        image?: string | File;
+        crawledAt?: string;
+        id?: string;
+        blockName?: string;
+        blockType: 'googleMap';
+      }
+  )[];
+  comments?: {
+    commentDate?: string;
+    commentBody: string;
     id?: string;
   }[];
   isFavorite?: boolean;
@@ -122,4 +180,26 @@ export interface Journal {
   updatedAt: string;
   createdAt: string;
   _status?: 'draft' | 'published';
+}
+export interface Grouping {
+  id: string;
+  title: string;
+  description?: string;
+  type: 'static' | 'dynamic';
+  rules?: {
+    dateStart?: string;
+    dateEnd?: string;
+    tags?: {
+      tag?: string;
+      id?: string;
+    }[];
+    moods?: {
+      mood?: string;
+      id?: string;
+    }[];
+  };
+  journals?: string[] | Journal[];
+  journalCount?: number;
+  updatedAt: string;
+  createdAt: string;
 }

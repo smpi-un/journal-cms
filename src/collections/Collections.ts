@@ -157,10 +157,14 @@ const JournalsCollection: CollectionConfig = {
           if (rules.tags && Array.isArray(rules.tags) && rules.tags.length > 0) {
             const tagValues = rules.tags.map((t: any) => t.tag).filter((t: any) => t);
             if (tagValues.length > 0) {
+              // Use 'like' for partial/prefix match (e.g. "Event" matches "Event/Summer")
+              // Wrapping in OR to match ANY of the provided tag prefixes
               where.and.push({
-                'tags.tag': {
-                  in: tagValues,
-                },
+                or: tagValues.map((val: string) => ({
+                  'tags.tag': {
+                    like: val,
+                  },
+                })),
               });
               hashRules = true;
             }
