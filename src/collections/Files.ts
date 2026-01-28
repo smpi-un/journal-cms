@@ -3,22 +3,14 @@ import { CollectionConfig } from 'payload/types';
 const Files: CollectionConfig = {
   slug: 'files',
   versions: {
-    maxPerDoc: 10, // 1ドキュメントあたり保持する最大履歴数（古いものから削除）
-    drafts: {
-      autosave: {
-        // 自動保存の設定（任意）
-        interval: 2000, // 2秒ごとに自動保存
-      },
-    },
+    maxPerDoc: 10,
+    drafts: false, // ドラフト機能を無効化（ファイルアップロードのエラー回避のため）
   },
   upload: {
-    adminThumbnail: 'filename',
-  },
-  access: {
-    read: () => true,
-    update: () => true,
-    create: () => true,
-    delete: () => true,
+    staticURL: '/media',
+    staticDir: 'media',
+    disableLocalStorage: true,
+    mimeTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf'],
   },
   fields: [
     {
@@ -56,6 +48,118 @@ const Files: CollectionConfig = {
       admin: {
         description: 'Add tags to categorize the file.',
       },
+    },
+    {
+      name: 'fileType',
+      type: 'select',
+      label: 'File Type',
+      defaultValue: 'other',
+      options: [
+        { label: 'Image', value: 'image' },
+        { label: 'Video', value: 'video' },
+        { label: 'Audio', value: 'audio' },
+        { label: 'Other', value: 'other' },
+      ],
+      admin: {
+        position: 'sidebar',
+      },
+    },
+    {
+      name: 'imageDetails',
+      type: 'group',
+      label: 'Image Details',
+      admin: {
+        condition: (data) => data?.fileType === 'image',
+      },
+      fields: [
+        {
+          name: 'width',
+          type: 'number',
+          label: 'Width (px)',
+        },
+        {
+          name: 'height',
+          type: 'number',
+          label: 'Height (px)',
+        },
+        {
+          name: 'exif',
+          type: 'textarea', // JSON format
+          label: 'Exif Data (JSON)',
+        },
+      ],
+    },
+    {
+      name: 'aiAnalysis',
+      type: 'group',
+      label: 'AI Analysis',
+      fields: [
+        {
+          name: 'ocr',
+          type: 'array',
+          label: 'OCR Results',
+          fields: [
+            {
+              name: 'text',
+              type: 'textarea',
+              label: 'Text',
+            },
+            {
+              name: 'model',
+              type: 'text',
+              label: 'Model',
+            },
+            {
+              name: 'analyzedAt',
+              type: 'date',
+              label: 'Analyzed At',
+              admin: {
+                date: {
+                  pickerAppearance: 'dayAndTime',
+                },
+              },
+            },
+          ],
+        },
+        {
+          name: 'description',
+          type: 'array',
+          label: 'Descriptions & Tags',
+          fields: [
+            {
+              name: 'text',
+              type: 'textarea',
+              label: 'Description Text',
+            },
+            {
+              name: 'tags',
+              type: 'array',
+              label: 'Tags',
+              fields: [
+                {
+                  name: 'item',
+                  type: 'text',
+                },
+              ],
+            },
+            {
+              name: 'model',
+              type: 'text',
+              label: 'Model',
+            },
+            {
+              name: 'analyzedAt',
+              type: 'date',
+              label: 'Analyzed At',
+              admin: {
+                date: {
+                  pickerAppearance: 'dayAndTime',
+                },
+              },
+            },
+          ],
+        },
+      ],
     },
   ],
 };

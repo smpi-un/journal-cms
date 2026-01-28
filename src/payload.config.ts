@@ -1,7 +1,6 @@
 import { buildConfig } from 'payload/config';
 import path from 'path';
 import Users from './collections/Users';
-import Posts from './collections/Posts';
 import Files from './collections/Files';
 import Journals from './collections/Journals'; // Corrected typo here
 import { payloadCloud } from '@payloadcms/plugin-cloud';
@@ -24,7 +23,7 @@ export default buildConfig({
   upload: {
     defParamCharset: 'utf-8',
   },
-  collections: [Users, Posts, Files, Journals, Collections],
+  collections: [Users, Files, Journals, Collections],
   endpoints: [generateSummary],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
