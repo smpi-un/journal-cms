@@ -51,7 +51,7 @@ export default buildConfig({
             bucket: process.env.S3_BUCKET,
           }),
           generateFileURL: (file) => {
-            return `${process.env.S3_PUBLIC_ENDPOINT}/${process.env.S3_BUCKET}/${file.filename}`;
+            return `/media/${file.filename}`;
           },
         },
       },

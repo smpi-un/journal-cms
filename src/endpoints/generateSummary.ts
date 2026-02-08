@@ -33,7 +33,7 @@ ${content}`;
       console.log('[/api/generate-summary] Model obtained. Generating content...');
 
       const result = await model.generateContent(prompt, {
-        requestOptions: { timeout: 20000 }, // Keep timeout
+        timeout: 20000,
       });
       console.log('[/api/generate-summary] Content generated.');
 

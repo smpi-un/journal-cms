@@ -25,6 +25,15 @@ const start = async () => {
   });
 
   // Add your own express routes here
+  const { createProxyMiddleware } = await import('http-proxy-middleware');
+
+  app.use(
+    '/media',
+    createProxyMiddleware({
+      target: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}`,
+      changeOrigin: true,
+    }),
+  );
 
   app.listen(3000);
 };

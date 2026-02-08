@@ -9,7 +9,6 @@
 export interface Config {
   collections: {
     users: User;
-    posts: Post;
     files: File;
     journals: Journal;
     groupings: Grouping;
@@ -32,17 +31,6 @@ export interface User {
   lockUntil?: string;
   password?: string;
 }
-export interface Post {
-  id: string;
-  title: string;
-  content?: {
-    [k: string]: unknown;
-  }[];
-  author?: string | User;
-  updatedAt: string;
-  createdAt: string;
-  _status?: 'draft' | 'published';
-}
 export interface File {
   id: string;
   alt?: string;
@@ -52,10 +40,33 @@ export interface File {
     tag?: string;
     id?: string;
   }[];
+  fileType?: 'image' | 'video' | 'audio' | 'other';
+  imageDetails?: {
+    width?: number;
+    height?: number;
+    exif?: string;
+  };
+  aiAnalysis?: {
+    ocr?: {
+      text?: string;
+      model?: string;
+      analyzedAt?: string;
+      id?: string;
+    }[];
+    description?: {
+      text?: string;
+      tags?: {
+        item?: string;
+        id?: string;
+      }[];
+      model?: string;
+      analyzedAt?: string;
+      id?: string;
+    }[];
+  };
   prefix?: string;
   updatedAt: string;
   createdAt: string;
-  _status?: 'draft' | 'published';
   url?: string;
   filename?: string;
   mimeType?: string;
@@ -83,6 +94,7 @@ export interface Journal {
         title?: string;
         description?: string;
         imageUrl?: string;
+        image?: string | File;
         siteName?: string;
         crawledAt?: string;
         id?: string;

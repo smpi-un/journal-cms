@@ -5,7 +5,7 @@ import { useFormFields, useField } from 'payload/components/forms';
 const AiSummaryButton: React.FC = () => {
   // `richTextContent`と`textContent`の両方を取得
   const { richTextContent, textContent } = useFormFields(([fields]) => ({
-    richTextContent: fields.richTextContent?.value,
+    richTextContent: fields.richTextContent?.value as any[],
     textContent: fields.textContent?.value as string,
   }));
 
