@@ -1,4 +1,7 @@
 import { CollectionConfig } from 'payload/types';
+import AiAnalysisButton from '../components/AiAnalysisButton';
+import { createCommentsField } from '../fields/comments';
+import { createTagsField } from '../fields/tags';
 
 const Files: CollectionConfig = {
   slug: 'files',
@@ -8,8 +11,8 @@ const Files: CollectionConfig = {
   },
   upload: {
     staticURL: '/media',
-    staticDir: 'media',
-    disableLocalStorage: true,
+    staticDir: 'media', // Files will be stored in 'media' directory if localStorage is enabled
+    disableLocalStorage: true, // But it's disabled, so S3 is used
     mimeTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf'],
   },
   fields: [
@@ -34,9 +37,7 @@ const Files: CollectionConfig = {
         description: 'Store additional metadata as a JSON string. Make sure it is valid JSON.',
       },
     },
-    {
-      name: 'tags',
-      type: 'array',
+    createTagsField({
       label: 'Tags',
       fields: [
         {
@@ -48,7 +49,8 @@ const Files: CollectionConfig = {
       admin: {
         description: 'Add tags to categorize the file.',
       },
-    },
+    }),
+    createCommentsField(),
     {
       name: 'fileType',
       type: 'select',
@@ -93,10 +95,23 @@ const Files: CollectionConfig = {
       name: 'aiAnalysis',
       type: 'group',
       label: 'AI Analysis',
+      admin: {
+        condition: (data) => data?.fileType === 'image',
+      },
       fields: [
         {
+          name: 'aiAnalysisButton',
+          type: 'ui',
+          label: 'Action',
+          admin: {
+            components: {
+              Field: AiAnalysisButton,
+            },
+          },
+        },
+        {
           name: 'ocr',
-          type: 'array',
+          type: 'group',
           label: 'OCR Results',
           fields: [
             {
@@ -123,7 +138,7 @@ const Files: CollectionConfig = {
         },
         {
           name: 'description',
-          type: 'array',
+          type: 'group',
           label: 'Descriptions & Tags',
           fields: [
             {

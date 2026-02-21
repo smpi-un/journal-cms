@@ -1,5 +1,7 @@
 import { CollectionConfig } from 'payload/types';
 import AiSummaryButton from '../components/AiSummaryButton'; // Import AiSummaryButton
+import { createCommentsField } from '../fields/comments';
+import { createTagsField } from '../fields/tags';
 
 const DIFY_API_URL = `${process.env.DIFY_API_URL}/datasets/${process.env.DIFY_DATASET_ID}/document/create_by_text`;
 const DIFY_API_KEY = `Bearer ${process.env.DIFY_API_KEY}`; // "Bearer " + キー
@@ -280,29 +282,7 @@ const Journals: CollectionConfig = {
               ],
             },
             // Comments Field
-            {
-              name: 'comments',
-              label: 'Comments',
-              type: 'array',
-              fields: [
-                {
-                  name: 'commentDate',
-                  type: 'date',
-                  defaultValue: () => new Date(),
-                  admin: {
-                    date: {
-                      pickerAppearance: 'dayAndTime',
-                    },
-                  },
-                },
-                {
-                  name: 'commentBody',
-                  type: 'textarea',
-                  label: 'Comment',
-                  required: true,
-                },
-              ],
-            },
+            createCommentsField(),
           ],
         },
 
@@ -329,16 +309,7 @@ const Journals: CollectionConfig = {
               name: 'notebook',
               type: 'text',
             },
-            {
-              name: 'tags',
-              type: 'array',
-              fields: [
-                {
-                  name: 'tag',
-                  type: 'text',
-                },
-              ],
-            },
+            createTagsField(),
           ],
         },
 
