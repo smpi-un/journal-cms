@@ -67,3 +67,7 @@ Geminiは、コードを変更した際には**自発的にこれらのコマン
 5.  **既存コードの理解と計画的変更 (Understand Existing Code and Plan Changes)**
     - 既存コードを変更する際は、まずその意図を完全に理解する。その上で、**破壊的変更（Breaking Change）が必要な場合は、その必要性と影響範囲を明確にした上で、計画的に実行する。**
     - 「とりあえずやってみる」式の、無計画なコードの破壊や置き換えは、予期せぬ機能低下の最大の原因であるため、決して行わない。
+
+# Geminiのガイドライン
+Always answer in Japanese.
+The Implementation Plan and comments must be in Japanese.

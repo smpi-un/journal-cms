@@ -9,6 +9,7 @@ import DifyDashboard from './components/DifyDashboard'; // Import DifyDashboard
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3';
 import generateSummary from './endpoints/generateSummary';
+import analyzeFile from './endpoints/analyzeFile';
 
 import Collections from './collections/Collections';
 
@@ -24,7 +25,7 @@ export default buildConfig({
     defParamCharset: 'utf-8',
   },
   collections: [Users, Files, Journals, Collections],
-  endpoints: [generateSummary],
+  endpoints: [generateSummary, analyzeFile],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },

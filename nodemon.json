@@ -1,4 +1,11 @@
 {
   "ext": "ts",
-  "exec": "ts-node src/server.ts"
+  "exec": "ts-node src/server.ts",
+  "ignore": [
+    "src/payload-types.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    ".git",
+    "node_modules"
+  ]
 }
