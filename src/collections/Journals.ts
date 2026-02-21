@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload/types';
 import AiSummaryButton from '../components/AiSummaryButton'; // Import AiSummaryButton
 import { createCommentsField } from '../fields/comments';
 import { createTagsField } from '../fields/tags';
+import { createPropertiesField } from '../fields/properties';
 
 const DIFY_API_URL = `${process.env.DIFY_API_URL}/datasets/${process.env.DIFY_DATASET_ID}/document/create_by_text`;
 const DIFY_API_KEY = `Bearer ${process.env.DIFY_API_KEY}`; // "Bearer " + キー
@@ -310,6 +311,7 @@ const Journals: CollectionConfig = {
               type: 'text',
             },
             createTagsField(),
+            createPropertiesField(),
           ],
         },
 

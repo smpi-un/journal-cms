@@ -2,6 +2,7 @@ import { CollectionConfig } from 'payload/types';
 import AiAnalysisButton from '../components/AiAnalysisButton';
 import { createCommentsField } from '../fields/comments';
 import { createTagsField } from '../fields/tags';
+import { createPropertiesField } from '../fields/properties';
 
 const Files: CollectionConfig = {
   slug: 'files',
@@ -40,6 +41,11 @@ const Files: CollectionConfig = {
     createTagsField({
       admin: {
         description: 'Add tags to categorize the file.',
+      },
+    }),
+    createPropertiesField({
+      admin: {
+        position: 'sidebar',
       },
     }),
     createCommentsField(),
