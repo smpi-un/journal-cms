@@ -38,14 +38,6 @@ const Files: CollectionConfig = {
       },
     },
     createTagsField({
-      label: 'Tags',
-      fields: [
-        {
-          name: 'tag',
-          type: 'text',
-          label: 'Tag',
-        },
-      ],
       admin: {
         description: 'Add tags to categorize the file.',
       },

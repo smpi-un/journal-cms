@@ -1,5 +1,4 @@
 import { CollectionConfig } from 'payload/types';
-import { createTagsField } from '../fields/tags';
 
 const JournalsCollection: CollectionConfig = {
   slug: 'groupings', // "collections" is a reserved word in some contexts, so using "groupings" or keeping user facing label as "Collections"
@@ -71,11 +70,19 @@ const JournalsCollection: CollectionConfig = {
             },
           ],
         },
-        createTagsField({
+        {
+          name: 'tags',
+          type: 'array',
           admin: {
             description: 'Match journals with these tags (OR match)',
           },
-        }),
+          fields: [
+            {
+              name: 'tag',
+              type: 'text',
+            },
+          ],
+        },
         {
           name: 'moods',
           type: 'array',
