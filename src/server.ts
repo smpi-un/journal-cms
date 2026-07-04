@@ -14,6 +14,23 @@ app.get('/', (_, res) => {
 });
 
 const start = async () => {
+  // Add S3 proxy middleware before initializing Payload to intercept /media requests
+  const { createProxyMiddleware } = await import('http-proxy-middleware');
+
+  app.use(
+    '/media',
+    createProxyMiddleware({
+      target: `http://garage:3902`,
+      changeOrigin: false,
+      pathRewrite: {
+        '^/media': '',
+      },
+      headers: {
+        host: `payload-media.s3.garage`,
+      },
+    }),
+  );
+
   // Initialize Payload
   await payload.init({
     secret: process.env.PAYLOAD_SECRET,
@@ -23,17 +40,6 @@ const start = async () => {
       payload.logger.info(`Payload Admin URL: ${payload.getAdminURL()}`);
     },
   });
-
-  // Add your own express routes here
-  const { createProxyMiddleware } = await import('http-proxy-middleware');
-
-  app.use(
-    '/media',
-    createProxyMiddleware({
-      target: `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}`,
-      changeOrigin: true,
-    }),
-  );
 
   app.listen(3000);
 };

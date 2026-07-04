@@ -15,8 +15,7 @@ services:
       - mongo
       # - postgres
       - meilisearch
-      - minio
-      - minio-init
+      - garage
     env_file:
       - .env
     environment:
@@ -26,12 +25,12 @@ services:
       # - DATABASE_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
       # - MONGODB_URI=mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/payload-db?authSource=admin
       - MONGODB_URI=mongodb://mongo:27017/payload-db?authSource=admin
-      - S3_ENDPOINT=http://minio:9000
+      - S3_ENDPOINT=http://garage:3900
       - S3_FORCE_PATH_STYLE=true
       # - S3_BUCKET=my-bucket
-      - S3_REGION=us-east-1
-      - S3_ACCESS_KEY=${MINIO_ROOT_USER}
-      - S3_SECRET_KEY=${MINIO_ROOT_PASSWORD}
+      - S3_REGION=garage
+      - S3_ACCESS_KEY=${GARAGE_DEFAULT_ACCESS_KEY}
+      - S3_SECRET_KEY=${GARAGE_DEFAULT_SECRET_KEY}
     extra_hosts: # for Dify
       - "host.docker.internal:host-gateway"
       
@@ -138,33 +137,25 @@ services:
       - meili-data:/meili_data
 
   # オブジェクトストレージ (画像のS3互換保存先)
-  minio:
-    image: minio/minio
-    container_name: my_minio
+  garage:
+    image: dxflrs/garage:v2.3.0
+    container_name: my_garage
     restart: unless-stopped
-    command: server /data --console-address ":9001"
+    command: /garage server --single-node --default-bucket
     ports:
-      - "9000:9000" # APIポート
-      - "9001:9001" # 管理画面ポート
-    env_file:
-      - .env
+      - "3900:3900" # S3 API
+      - "3902:3902" # S3 Web
+      - "3903:3903" # Admin API
     volumes:
-      - minio-data:/data
-
-  minio-init:
-    image: minio/mc
-    depends_on:
-      - minio
-    env_file:
-      - .env
-    # MinIOの起動を待ち、バケット作成とパブリック設定を行う
-    entrypoint: >
-      /bin/sh -c "
-      until /usr/bin/mc alias set myminio http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}; do echo 'Waiting for MinIO...' && sleep 1; done;
-      /usr/bin/mc mb myminio/${S3_BUCKET} || echo 'Bucket already exists';
-      /usr/bin/mc anonymous set public myminio/${S3_BUCKET};
-      exit 0;
-      "
+      - ./garage.toml:/etc/garage.toml:ro
+      - garage-meta:/var/lib/garage/meta
+      - garage-data:/var/lib/garage/data
+    environment:
+      - GARAGE_RPC_SECRET=${GARAGE_RPC_SECRET}
+      - GARAGE_ADMIN_TOKEN=${GARAGE_ADMIN_TOKEN}
+      - GARAGE_DEFAULT_ACCESS_KEY=${GARAGE_DEFAULT_ACCESS_KEY}
+      - GARAGE_DEFAULT_SECRET_KEY=${GARAGE_DEFAULT_SECRET_KEY}
+      - GARAGE_DEFAULT_BUCKET=${GARAGE_DEFAULT_BUCKET}
 
 volumes:
   data:
@@ -172,4 +163,5 @@ volumes:
   # pgdata:
   node_modules:
   meili-data:
-  minio-data:
+  garage-meta:
+  garage-data:

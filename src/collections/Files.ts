@@ -12,8 +12,8 @@ const Files: CollectionConfig = {
   },
   upload: {
     staticURL: '/media',
-    staticDir: 'media', // Files will be stored in 'media' directory if localStorage is enabled
-    disableLocalStorage: true, // But it's disabled, so S3 is used
+    staticDir: 'media',
+    disableLocalStorage: true,
     mimeTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf'],
   },
   fields: [
@@ -38,14 +38,15 @@ const Files: CollectionConfig = {
         description: 'Store additional metadata as a JSON string. Make sure it is valid JSON.',
       },
     },
-    createTagsField({
+    createTagsField('tags', 'Tags', {
       admin: {
         description: 'Add tags to categorize the file.',
       },
     }),
-    createPropertiesField({
+    createPropertiesField('properties', 'Properties', {
       admin: {
         position: 'sidebar',
+        description: 'Add custom key-value properties.',
       },
     }),
     createCommentsField(),
