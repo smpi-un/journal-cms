@@ -6,6 +6,12 @@ import { createPropertiesField } from '../fields/properties';
 
 const Files: CollectionConfig = {
   slug: 'files',
+  access: {
+    read: () => true,
+    create: ({ req: { user } }) => Boolean(user),
+    update: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
+  },
   versions: {
     maxPerDoc: 10,
     drafts: false, // ドラフト機能を無効化（ファイルアップロードのエラー回避のため）

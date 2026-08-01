@@ -29,9 +29,9 @@ const Journals: CollectionConfig = {
   },
   access: {
     read: () => true,
-    update: () => true,
-    create: () => true,
-    delete: () => true,
+    update: ({ req: { user } }) => Boolean(user),
+    create: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
   },
   fields: [
     {
