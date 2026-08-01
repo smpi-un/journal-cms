@@ -1,8 +1,9 @@
-import { Field } from 'payload/types';
+import { Field, ArrayField } from 'payload/types';
 
 export const createCommentsField = (
   name: string = 'comments',
   label: string = 'Comments',
+  overrides?: Partial<ArrayField>,
 ): Field => ({
   name,
   label,
@@ -25,4 +26,5 @@ export const createCommentsField = (
       required: true,
     },
   ],
+  ...overrides,
 });

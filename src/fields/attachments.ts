@@ -1,8 +1,8 @@
 import { Field, ArrayField } from 'payload/types';
 
-export const createPropertiesField = (
-  name: string = 'properties',
-  label: string = 'Properties',
+export const createAttachmentsField = (
+  name: string = 'attachments',
+  label: string = 'Attachments',
   overrides?: Partial<ArrayField>,
 ): Field => ({
   name,
@@ -10,16 +10,15 @@ export const createPropertiesField = (
   type: 'array',
   fields: [
     {
-      name: 'key',
-      type: 'text',
-      label: 'Key',
+      name: 'file',
+      type: 'upload',
+      relationTo: 'files',
       required: true,
     },
     {
-      name: 'value',
+      name: 'description',
       type: 'text',
-      label: 'Value',
-      required: true,
+      label: 'Description / Caption',
     },
   ],
   ...overrides,

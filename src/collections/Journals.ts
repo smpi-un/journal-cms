@@ -4,6 +4,11 @@ import { createCommentsField } from '../fields/comments';
 import { createTagsField } from '../fields/tags';
 import { createPropertiesField } from '../fields/properties';
 
+import { createWebResourcesField } from '../fields/web-resources';
+import { createLocationField } from '../fields/location';
+import { createWeatherField } from '../fields/weather';
+import { createAttachmentsField } from '../fields/attachments';
+
 const DIFY_API_URL = `${process.env.DIFY_API_URL}/datasets/${process.env.DIFY_DATASET_ID}/document/create_by_text`;
 const DIFY_API_KEY = `Bearer ${process.env.DIFY_API_KEY}`; // "Bearer " + キー
 
@@ -78,210 +83,9 @@ const Journals: CollectionConfig = {
               },
             },
             // Unified Attachments Field
-            {
-              name: 'attachments',
-              label: 'Attachments',
-              type: 'array',
-              fields: [
-                {
-                  name: 'file',
-                  type: 'upload',
-                  relationTo: 'files',
-                  required: true,
-                },
-                {
-                  name: 'description',
-                  type: 'text',
-                  label: 'Description / Caption',
-                },
-              ],
-            },
+            createAttachmentsField(),
             // Web Resources Field
-            {
-              name: 'webResources',
-              label: 'Web Resources',
-              type: 'blocks',
-              blocks: [
-                {
-                  slug: 'general',
-                  labels: {
-                    singular: 'General Link',
-                    plural: 'General Links',
-                  },
-                  fields: [
-                    {
-                      name: 'url',
-                      type: 'text',
-                      required: true,
-                    },
-                    {
-                      name: 'title',
-                      type: 'text',
-                    },
-                    {
-                      name: 'description',
-                      type: 'textarea',
-                    },
-                    {
-                      name: 'imageUrl',
-                      type: 'text',
-                      label: 'Image URL',
-                    },
-                    {
-                      name: 'image',
-                      type: 'upload',
-                      relationTo: 'files',
-                      label: 'Saved Image',
-                    },
-                    {
-                      name: 'siteName',
-                      type: 'text',
-                    },
-                    {
-                      name: 'crawledAt',
-                      type: 'date',
-                      admin: {
-                        date: {
-                          pickerAppearance: 'dayAndTime',
-                        },
-                      },
-                    },
-                  ],
-                },
-                {
-                  slug: 'youtube',
-                  labels: {
-                    singular: 'Youtube Video',
-                    plural: 'Youtube Videos',
-                  },
-                  fields: [
-                    {
-                      name: 'url',
-                      type: 'text',
-                      required: true,
-                    },
-                    {
-                      name: 'title',
-                      type: 'text',
-                    },
-                    {
-                      name: 'description',
-                      type: 'textarea',
-                    },
-                    {
-                      name: 'imageUrl',
-                      type: 'text',
-                      label: 'Thumbnail URL',
-                    },
-                    {
-                      name: 'siteName',
-                      type: 'text',
-                      defaultValue: 'YouTube',
-                    },
-                    {
-                      name: 'videoId',
-                      type: 'text',
-                    },
-                    {
-                      name: 'channelTitle',
-                      type: 'text',
-                    },
-                    {
-                      name: 'duration',
-                      type: 'text',
-                      label: 'Duration',
-                    },
-                    {
-                      name: 'viewCount',
-                      type: 'number',
-                    },
-                    {
-                      name: 'image',
-                      type: 'upload',
-                      relationTo: 'files',
-                      label: 'Saved Image',
-                    },
-                    {
-                      name: 'crawledAt',
-                      type: 'date',
-                      admin: {
-                        date: {
-                          pickerAppearance: 'dayAndTime',
-                        },
-                      },
-                    },
-                  ],
-                },
-                {
-                  slug: 'googleMap',
-                  labels: {
-                    singular: 'Google Map Place',
-                    plural: 'Google Map Places',
-                  },
-                  fields: [
-                    {
-                      name: 'url',
-                      type: 'text',
-                      required: true,
-                    },
-                    {
-                      name: 'title',
-                      type: 'text',
-                    },
-                    {
-                      name: 'description',
-                      type: 'textarea',
-                    },
-                    {
-                      name: 'imageUrl',
-                      type: 'text',
-                      label: 'Image URL',
-                    },
-                    {
-                      name: 'siteName',
-                      type: 'text',
-                      defaultValue: 'Google Maps',
-                    },
-                    {
-                      name: 'placeId',
-                      type: 'text',
-                    },
-                    {
-                      name: 'formattedAddress',
-                      type: 'text',
-                    },
-                    {
-                      name: 'location',
-                      type: 'point',
-                      label: 'Coordinates',
-                    },
-                    {
-                      name: 'rating',
-                      type: 'number',
-                    },
-                    {
-                      name: 'userRatingsTotal',
-                      type: 'number',
-                    },
-                    {
-                      name: 'image',
-                      type: 'upload',
-                      relationTo: 'files',
-                      label: 'Saved Image',
-                    },
-                    {
-                      name: 'crawledAt',
-                      type: 'date',
-                      admin: {
-                        date: {
-                          pickerAppearance: 'dayAndTime',
-                        },
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
+            createWebResourcesField(),
             // Comments Field
             createCommentsField(),
           ],
@@ -311,7 +115,11 @@ const Journals: CollectionConfig = {
               type: 'text',
             },
             createTagsField(),
-            createPropertiesField(),
+            createPropertiesField('properties', 'Properties', {
+              admin: {
+                description: 'Add custom key-value properties.',
+              },
+            }),
           ],
         },
 
@@ -348,39 +156,7 @@ const Journals: CollectionConfig = {
         // --- タブ4: 環境 (位置・天気) ---
         {
           label: 'Environment',
-          fields: [
-            {
-              name: 'location',
-              type: 'group',
-              fields: [
-                {
-                  type: 'row',
-                  fields: [
-                    { name: 'latitude', type: 'number' },
-                    { name: 'longitude', type: 'number' },
-                  ],
-                },
-                { name: 'name', type: 'text' },
-                { name: 'address', type: 'text' },
-                { name: 'altitude', type: 'number' },
-              ],
-            },
-            {
-              name: 'weather',
-              type: 'group',
-              fields: [
-                {
-                  type: 'row',
-                  fields: [
-                    { name: 'temperature', type: 'number' },
-                    { name: 'humidity', type: 'number' },
-                    { name: 'pressure', type: 'number' },
-                  ],
-                },
-                { name: 'condition', type: 'text' },
-              ],
-            },
-          ],
+          fields: [createLocationField(), createWeatherField()],
         },
 
         // --- タブ5: メタデータ ---
