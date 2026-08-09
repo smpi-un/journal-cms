@@ -2,10 +2,6 @@ import express from 'express';
 import payload from 'payload';
 import 'dotenv/config';
 
-process.env.DIFY_API_KEY = process.env.DIFY_API_KEY || '';
-process.env.DIFY_DATASET_ID = process.env.DIFY_DATASET_ID || '';
-process.env.DIFY_API_URL = process.env.DIFY_API_URL || '';
-
 const app = express();
 
 // Redirect root to Admin panel

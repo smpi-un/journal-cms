@@ -31,9 +31,7 @@ services:
       - S3_REGION=garage
       - S3_ACCESS_KEY=${GARAGE_DEFAULT_ACCESS_KEY}
       - S3_SECRET_KEY=${GARAGE_DEFAULT_SECRET_KEY}
-    extra_hosts: # for Dify
-      - "host.docker.internal:host-gateway"
-      
+
   mongo:
     image: mongo:latest
     ports:
@@ -86,35 +84,6 @@ services:
     image: redis:7-alpine
     container_name: my_redis
     restart: unless-stopped
-  appsmith:
-     image: index.docker.io/appsmith/appsmith-ee
-     container_name: appsmith
-     ports:
-         - "80:80"
-         - "443:443"
-     volumes:
-         - appsmith-data:/appsmith-stacks
-     restart: unless-stopped
-  # appsmith:
-  #   image: appsmith/appsmith-ce:v1.9.43
-  #   container_name: my_appsmith
-  #   restart: unless-stopped
-  #   ports:
-  #     - "8080:80"
-  #   env_file: ./.env
-  #   # URIからreplicaSetパラメータを削除3
-  #   environment:
-  #     # APPSMITH_MONGODB_URI: mongodb://mongo:27017/appsmith?authSource=admin
-  #     # APPSMITH_MONGODB_URI: mongodb://mongo:27017/appsmith?authSource=admin&replicaSet=rs0
-  #     # APPSMITH_MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/appsmith?authSource=admin
-  #     # APPSMITH_MONGODB_URI: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/appsmith?authSource=admin&replicaSet=rs0
-  #     APPSMITH_REDIS_URL: redis://redis:6379
-  #   depends_on:
-  #     - mongo
-  #     - redis
-  #   volumes:
-  #     - appsmith-data:/appsmith-stacks
-
 
   # Uncomment the following to use postgres
   # postgres:
@@ -159,7 +128,6 @@ services:
 
 volumes:
   data:
-  appsmith-data:
   # pgdata:
   node_modules:
   meili-data:

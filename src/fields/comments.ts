@@ -1,4 +1,5 @@
 import { Field, ArrayField } from 'payload/types';
+import { authorshipSubFields } from './authorship';
 
 export const createCommentsField = (
   name: string = 'comments',
@@ -25,6 +26,7 @@ export const createCommentsField = (
       label: 'Comment',
       required: true,
     },
+    ...authorshipSubFields(),
   ],
   ...overrides,
 });

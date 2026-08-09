@@ -1,4 +1,5 @@
 import { Field, ArrayField } from 'payload/types';
+import { authorshipSubFields } from './authorship';
 
 export const createTagsField = (
   name: string = 'tags',
@@ -14,6 +15,7 @@ export const createTagsField = (
       type: 'text',
       label: 'Tag',
     },
+    ...authorshipSubFields(),
   ],
   ...overrides,
 });

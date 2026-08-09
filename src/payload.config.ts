@@ -5,11 +5,8 @@ import Files from './collections/Files';
 import Journals from './collections/Journals'; // Corrected typo here
 import { payloadCloud } from '@payloadcms/plugin-cloud';
 import BeforeDashboard from './components/BeforeDashboard';
-import DifyDashboard from './components/DifyDashboard'; // Import DifyDashboard
 import { cloudStorage } from '@payloadcms/plugin-cloud-storage';
 import { s3Adapter } from '@payloadcms/plugin-cloud-storage/s3';
-import generateSummary from './endpoints/generateSummary';
-import analyzeFile from './endpoints/analyzeFile';
 
 import Collections from './collections/Collections';
 
@@ -18,14 +15,12 @@ export default buildConfig({
     user: Users.slug,
     components: {
       beforeDashboard: [BeforeDashboard],
-      afterDashboard: [DifyDashboard], // Add DifyDashboard here
     },
   },
   upload: {
     defParamCharset: 'utf-8',
   },
   collections: [Users, Files, Journals, Collections],
-  endpoints: [generateSummary, analyzeFile],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },

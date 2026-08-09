@@ -33,11 +33,47 @@ export interface User {
 }
 export interface File {
   id: string;
+  encryption: {
+    scope: 'none' | 'partial' | 'full';
+    algorithm?: string;
+    keyId?: string;
+    encryptedAt?: string;
+  };
   alt?: string;
+  altAuthorship: {
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
+  };
   originalFilename?: string;
   metaData?: string;
   tags?: {
     tag?: string;
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
+    id?: string;
+  }[];
+  properties?: {
+    key: string;
+    value: string;
+    id?: string;
+  }[];
+  comments?: {
+    commentDate?: string;
+    commentBody: string;
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
     id?: string;
   }[];
   fileType?: 'image' | 'video' | 'audio' | 'other';
@@ -49,20 +85,20 @@ export interface File {
   aiAnalysis?: {
     ocr?: {
       text?: string;
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
       model?: string;
       analyzedAt?: string;
-      id?: string;
-    }[];
+    };
     description?: {
       text?: string;
       tags?: {
         item?: string;
         id?: string;
       }[];
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
       model?: string;
       analyzedAt?: string;
-      id?: string;
-    }[];
+    };
   };
   prefix?: string;
   updatedAt: string;
@@ -76,72 +112,80 @@ export interface File {
 }
 export interface Journal {
   id: string;
+  encryption: {
+    scope: 'none' | 'partial' | 'full';
+    algorithm?: string;
+    keyId?: string;
+    encryptedAt?: string;
+  };
   entryAt: string;
   title?: string;
+  titleAuthorship: {
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
+  };
   richTextContent?: {
     [k: string]: unknown;
   }[];
   textContent?: string;
   summary?: string;
+  summaryAuthorship: {
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
+  };
   attachments?: {
     file: string | File;
     description?: string;
     id?: string;
   }[];
-  webResources?: (
-    | {
-        url: string;
-        title?: string;
-        description?: string;
-        imageUrl?: string;
-        image?: string | File;
-        siteName?: string;
-        crawledAt?: string;
-        id?: string;
-        blockName?: string;
-        blockType: 'general';
-      }
-    | {
-        url: string;
-        title?: string;
-        description?: string;
-        imageUrl?: string;
-        siteName?: string;
-        videoId?: string;
-        channelTitle?: string;
-        duration?: string;
-        viewCount?: number;
-        image?: string | File;
-        crawledAt?: string;
-        id?: string;
-        blockName?: string;
-        blockType: 'youtube';
-      }
-    | {
-        url: string;
-        title?: string;
-        description?: string;
-        imageUrl?: string;
-        siteName?: string;
-        placeId?: string;
-        formattedAddress?: string;
-        /**
-         * @minItems 2
-         * @maxItems 2
-         */
-        location?: [number, number];
-        rating?: number;
-        userRatingsTotal?: number;
-        image?: string | File;
-        crawledAt?: string;
-        id?: string;
-        blockName?: string;
-        blockType: 'googleMap';
-      }
-  )[];
+  webResources?: {
+    url: string;
+    title?: string;
+    description?: string;
+    imageUrl?: string;
+    image?: string | File;
+    siteName?: string;
+    crawledAt?: string;
+    tags?: {
+      tag?: string;
+      authorType: 'human' | 'ai';
+      aiMeta?: {
+        provider?: 'anthropic' | 'openai' | 'google' | 'other';
+        model?: string;
+        respondedAt?: string;
+      };
+      id?: string;
+    }[];
+    comments?: {
+      commentDate?: string;
+      commentBody: string;
+      authorType: 'human' | 'ai';
+      aiMeta?: {
+        provider?: 'anthropic' | 'openai' | 'google' | 'other';
+        model?: string;
+        respondedAt?: string;
+      };
+      id?: string;
+    }[];
+    id?: string;
+  }[];
   comments?: {
     commentDate?: string;
     commentBody: string;
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
     id?: string;
   }[];
   isFavorite?: boolean;
@@ -149,6 +193,17 @@ export interface Journal {
   notebook?: string;
   tags?: {
     tag?: string;
+    authorType: 'human' | 'ai';
+    aiMeta?: {
+      provider?: 'anthropic' | 'openai' | 'google' | 'other';
+      model?: string;
+      respondedAt?: string;
+    };
+    id?: string;
+  }[];
+  properties?: {
+    key: string;
+    value: string;
     id?: string;
   }[];
   moodLabel?: string;

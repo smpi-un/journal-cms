@@ -1,8 +1,9 @@
 import { CollectionConfig } from 'payload/types';
-import AiAnalysisButton from '../components/AiAnalysisButton';
 import { createCommentsField } from '../fields/comments';
 import { createTagsField } from '../fields/tags';
 import { createPropertiesField } from '../fields/properties';
+import { createAuthorshipField } from '../fields/authorship';
+import { createEncryptionMetaField } from '../fields/encryption';
 
 const Files: CollectionConfig = {
   slug: 'files',
@@ -23,11 +24,13 @@ const Files: CollectionConfig = {
     mimeTypes: ['image/*', 'video/*', 'audio/*', 'application/pdf'],
   },
   fields: [
+    createEncryptionMetaField(),
     {
       name: 'alt',
       type: 'text',
       label: 'Description / Alt Text',
     },
+    createAuthorshipField('altAuthorship', 'Alt Text Source'),
     {
       name: 'originalFilename',
       type: 'text',
@@ -105,16 +108,6 @@ const Files: CollectionConfig = {
       },
       fields: [
         {
-          name: 'aiAnalysisButton',
-          type: 'ui',
-          label: 'Action',
-          admin: {
-            components: {
-              Field: AiAnalysisButton,
-            },
-          },
-        },
-        {
           name: 'ocr',
           type: 'group',
           label: 'OCR Results',
@@ -123,6 +116,17 @@ const Files: CollectionConfig = {
               name: 'text',
               type: 'textarea',
               label: 'Text',
+            },
+            {
+              name: 'provider',
+              type: 'select',
+              label: 'Provider',
+              options: [
+                { label: 'Anthropic', value: 'anthropic' },
+                { label: 'OpenAI', value: 'openai' },
+                { label: 'Google', value: 'google' },
+                { label: 'Other', value: 'other' },
+              ],
             },
             {
               name: 'model',
@@ -160,6 +164,17 @@ const Files: CollectionConfig = {
                   name: 'item',
                   type: 'text',
                 },
+              ],
+            },
+            {
+              name: 'provider',
+              type: 'select',
+              label: 'Provider',
+              options: [
+                { label: 'Anthropic', value: 'anthropic' },
+                { label: 'OpenAI', value: 'openai' },
+                { label: 'Google', value: 'google' },
+                { label: 'Other', value: 'other' },
               ],
             },
             {

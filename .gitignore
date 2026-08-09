@@ -7,3 +7,6 @@ node_modules
 
 /data
 /.pnpm-store
+
+# direnv
+.direnv/
